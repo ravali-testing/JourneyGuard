@@ -1,0 +1,21 @@
+Test_ID,Category,Test_Scenario,Target_Table,SQL_Query_Reference,Expected_Result,Severity
+DB-TC-001,Constraint,Validate Email Uniqueness Constraint,users,INSERT INTO users (email) VALUES ('john.doe@example.com'),Database rejects duplicate email insertion with UNIQUE constraint error,High
+DB-TC-002,Integrity,Test Invalid Foreign Key Insertion,bookings,INSERT INTO bookings (user_id) VALUES (99999),Database rejects insertion due to missing user_id FK constraint,Critical
+DB-TC-003,Constraint,Validate Negative Ticket Price Rejection,journeys,INSERT INTO journeys (standard_price) VALUES (-10.00),Database raises CHECK constraint violation on standard_price,High
+DB-TC-004,Integrity,Verify Cascade Delete on Customer Profile,customer_profiles,DELETE FROM users WHERE user_id = 1,Associated customer profile row is deleted automatically,Medium
+DB-TC-005,Data Quality,Detect Duplicate Customer Accounts,customer_profiles,Query #34 (GROUP BY name HAVING count > 1),Zero duplicate customer names returned,High
+DB-TC-006,Data Quality,Identify Expired Railcards Used in Active Bookings,bookings,Query #32 (CTE Expired Railcards),Zero bookings created with expired railcard ID,Critical
+DB-TC-007,Reconciliation,Reconcile Payment Amount vs Final Booking Price,payments/bookings,Query #23 (Mismatch Check),Payment amount equals final_price for 100% of confirmed bookings,Critical
+DB-TC-008,Reconciliation,Reconcile Passenger Count vs Ticket Quantity,booking_passengers,Query #38 (Seat vs Ticket Check),Passenger record count equals ticket_quantity for each booking,High
+DB-TC-009,Integrity,Detect Orphan Bookings Without Payment Records,bookings,Query #6 (LEFT JOIN payments WHERE null),Zero confirmed bookings exist without a matching payment record,Critical
+DB-TC-010,Constraint,Validate Departure vs Arrival Station Differentiation,journeys,INSERT INTO journeys (departure_station_id, arrival_station_id) VALUES (1,1),Database CHECK constraint rejects identical origin and destination,Medium
+DB-TC-011,Transaction,Validate Payment Failure Handling,payments,Query #39 (Failed Payments),Failed payments update status to FAILED without altering booking,High
+DB-TC-012,Data Quality,Detect Null Phone Numbers in Customer Profiles,customer_profiles,SELECT * FROM customer_profiles WHERE phone_number IS NULL,Zero active profiles have NULL phone numbers,Low
+DB-TC-013,Reconciliation,Validate Total Cancelled Booking Refund Amount,bookings,Query #24 (Cancelled Amount),Sum of cancelled bookings matches audit refund log,Medium
+DB-TC-014,Integrity,Verify Station Code Unique Constraint,stations,INSERT INTO stations (station_code) VALUES ('KGX'),Database rejects duplicate station_code insertion,High
+DB-TC-015,Data Quality,Validate Discount Calculation Accuracy,bookings,Query #33 (Discount Math Check),final_price exactly equals (original_price - discount_amount),Critical
+DB-TC-016,Constraint,Validate Discount Rate Range Constraint,railcards,INSERT INTO railcards (discount_rate) VALUES (1.50),Database rejects discount rate greater than 1.00 (100%),High
+DB-TC-017,Audit,Verify Audit Trail Generation on User Login,audit_events,Query #40 (Audit Log Check),Security actions create an entry in audit_events,Medium
+DB-TC-018,Reconciliation,Reconcile Daily Revenue against Booking Sums,bookings,Query #29 (Running Revenue CTE),Daily revenue totals match individual transaction sums,High
+DB-TC-019,Data Quality,Detect Users With Multiple Active Railcards,railcards,SELECT user_id FROM railcards WHERE status='ACTIVE' GROUP BY user_id HAVING COUNT(*)>1,No user holds more than 1 active railcard,High
+DB-TC-020,Integrity,Verify Support Case Foreign Key Integrity,support_cases,SELECT * FROM support_cases WHERE user_id NOT IN (SELECT user_id FROM users),Zero support cases exist with non-existent user IDs,High

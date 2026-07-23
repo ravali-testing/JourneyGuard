@@ -1,0 +1,6 @@
+Check_ID,Check_Name,SQL_Query,Status,Exceptions_Count,Timestamp
+DQ-001,Reconcile Payment vs Booking Final Price,SELECT * FROM bookings b JOIN payments p ON b.booking_id=p.booking_id WHERE b.final_price <> p.amount,PASSED,0,2026-07-23 16:22:29
+DQ-002,Detect Expired Railcard Usage in Active Bookings,SELECT * FROM bookings b JOIN railcards r ON b.railcard_id=r.railcard_id WHERE r.expiry_date < b.created_at,FAILED,1,2026-07-23 16:22:29
+DQ-003,Check Passenger Count vs Ticket Quantity Mismatch,SELECT b.booking_reference FROM bookings b LEFT JOIN booking_passengers bp ON b.booking_id=bp.booking_id GROUP BY b.booking_reference HAVING b.ticket_quantity <> COUNT(bp.passenger_id),PASSED,0,2026-07-23 16:22:29
+DQ-004,Detect Duplicate Customer Account Names,"SELECT first_name, last_name FROM customer_profiles GROUP BY first_name, last_name HAVING COUNT(*) > 1",PASSED,0,2026-07-23 16:22:29
+DQ-005,Identify Orphan Bookings Without Payment Records,SELECT * FROM bookings b LEFT JOIN payments p ON b.booking_id=p.booking_id WHERE p.payment_id IS NULL,PASSED,0,2026-07-23 16:22:29
