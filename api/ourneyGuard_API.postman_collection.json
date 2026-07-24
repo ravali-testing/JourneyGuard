@@ -1,0 +1,82 @@
+{
+  "info": {
+    "_postman_id": "a1b2c3d4-e5f6-7890-abcd-1234567890ef",
+    "name": "JourneyGuard API Integration Suite",
+    "description": "Postman API test suite covering Station Search, Fare Calculations, and Booking Endpoints.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "01 - Search Stations (GET /stations)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/stations?query=KGX",
+          "host": ["{{baseUrl}}"],
+          "path": ["stations"],
+          "query": [
+            {
+              "key": "query",
+              "value": "KGX"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "02 - Calculate Fare (POST /fares/calculate)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"base_price\": 100.00,\n  \"railcard_type\": \"SIXTEEN_TWENTYFIVE\",\n  \"ticket_quantity\": 1\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/fares/calculate",
+          "host": ["{{baseUrl}}"],
+          "path": ["fares", "calculate"]
+        }
+      }
+    },
+    {
+      "name": "03 - Create Booking (POST /bookings)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"origin\": \"KGX\",\n  \"destination\": \"MAN\",\n  \"passenger_email\": \"sarah.smith@journeyguard.co.uk\",\n  \"railcard_type\": \"SIXTEEN_TWENTYFIVE\",\n  \"passengers\": [\"Sarah Smith\"],\n  \"base_price\": 100.00\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/bookings",
+          "host": ["{{baseUrl}}"],
+          "path": ["bookings"]
+        }
+      }
+    },
+    {
+      "name": "04 - Get Booking Details (GET /bookings/:booking_id)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/bookings/{{bookingId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["bookings", "{{bookingId}}"]
+        }
+      }
+    }
+  ]
+}
